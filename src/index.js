@@ -38,12 +38,25 @@ class AddUpdateUserForm extends React.Component {
             job: ''
         };
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleButtonClick = this.handleButtonClick.bind(this);
     }
     handleInputChange(event) {
         const { name, value } = event.target;
         this.setState({
             [name]: value
         })
+    }
+    async handleButtonClick() {
+        const response = await fetch(
+            'https://reqres.in/api/users',
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                method: 'POST',
+                body: JSON.stringify(this.state)
+            });
+        const result = await response.json();
     }
     render() {
         return (
@@ -75,7 +88,10 @@ class AddUpdateUserForm extends React.Component {
                     </tr>
                     <tr>
                         <td colSpan='2'>
-                            <button className='width-button'>
+                            <button
+                                className='width-button'
+                                onClick={this.handleButtonClick}
+                            >
                                 {this.props.buttonText}
                             </button>
                         </td>
@@ -104,7 +120,7 @@ class App extends React.Component {
         return (
             <div>
                 <UserCardList data={this.state.data} />
-                <AddUpdateUserForm buttonText = 'ADD' />
+                <AddUpdateUserForm buttonText='ADD' />
             </div>)
 
     }
