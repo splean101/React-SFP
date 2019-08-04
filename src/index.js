@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom';
 
 const UserCard = (props) => {
     return (
-        <table>
+        <table className="card">
             <tbody>
                 <tr>
                     <td rowSpan='2'>
@@ -20,4 +20,11 @@ const UserCard = (props) => {
         </table>
     );
 }
-ReactDOM.render(<UserCard />, document.getElementById("root"));
+const data = {
+    "id": 2,
+    "email": "janet.weaver@reqres.in",
+    "first_name": "Janet",
+    "last_name": "Weaver",
+    "avatar": "https://s3.amazonaws.com/uifaces/faces/twitter/josephstein/128.jpg"
+}
+ReactDOM.render(<UserCard {...data} />, document.getElementById("root"));
