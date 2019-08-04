@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom';
+import { userInfo } from 'os';
 
 const UserCard = (props) => {
     return (
@@ -19,12 +20,93 @@ const UserCard = (props) => {
             </tbody>
         </table>
     );
+};
+const UserCardList = (props) => {
+    return (
+        <div className='blue-border'>
+            {props.data.map(
+                (user) => <UserCard key={user.id} {...user} />
+            )}
+        </div>
+    )
+};
+class AddUpdateUserForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            name: '',
+            job: ''
+        };
+        this.handleInputChange = this.handleInputChange.bind(this);
+    }
+    handleInputChange(event) {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        })
+    }
+    render() {
+        return (
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <label>
+                                Name:
+                                <input
+                                    type='text'
+                                    name='name'
+                                    value={this.state.name}
+                                    onChange={this.handleInputChange}
+                                />
+                            </label>
+                        </td>
+                        <td>
+                            <label>
+                                Job:
+                                <input
+                                    type='text'
+                                    name='job'
+                                    value={this.state.job}
+                                    onChange={this.handleInputChange}
+                                />
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colSpan='2'>
+                            <button className='width-button'>
+                                {this.props.buttonText}
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        )
+    }
+
 }
-const data = {
-    "id": 2,
-    "email": "janet.weaver@reqres.in",
-    "first_name": "Janet",
-    "last_name": "Weaver",
-    "avatar": "https://s3.amazonaws.com/uifaces/faces/twitter/josephstein/128.jpg"
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: []
+        };
+    }
+    async componentDidMount() {
+        const response = await fetch('https://reqres.in/api/users');
+        const result = await response.json();
+        this.setState({
+            data: result.data
+        })
+    }
+    render() {
+        return (
+            <div>
+                <UserCardList data={this.state.data} />
+                <AddUpdateUserForm buttonText = 'ADD' />
+            </div>)
+
+    }
 }
-ReactDOM.render(<UserCard {...data} />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById("root"));
