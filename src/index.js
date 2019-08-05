@@ -32,7 +32,7 @@ const UserCardList = (props) => {
 };
 const AddUpdateUserForm = (props) => {
     return (
-        <table>
+        <table className='blue-border'>
             <tbody>
                 <tr>
                     <td>
@@ -52,7 +52,7 @@ const AddUpdateUserForm = (props) => {
                                 <input
                                 type='text'
                                 name='job'
-                                value={state.job}
+                                value={props.job}
                                 onChange={props.handleInputChange}
                             />
                         </label>
@@ -60,17 +60,14 @@ const AddUpdateUserForm = (props) => {
                 </tr>
                 <tr>
                     <td colSpan='2'>
-                        <button
-                            className='width-button'
-                            onClick={props.handleButtonClick}
-                        >
+                        <button className='width-button' onClick={props.handleButtonClick}>
                             {props.buttonText}
                         </button>
                     </td>
                 </tr>
             </tbody>
         </table>
-    )
+    );
 }
 class App extends React.Component {
     constructor(props) {
@@ -115,12 +112,12 @@ class App extends React.Component {
         return (
             <div>
                 <UserCardList data={this.state.data} />
-                <AddUpdateUserForm 
-                name = {this.state.name}
-                job = {this.state.job}
-                buttonText='ADD'
-                handleButtonClick = {this.handleButtonClick}
-                handleInputChange = {this.handleInputChange}
+                <AddUpdateUserForm
+                    name={this.state.name}
+                    job={this.state.job}
+                    buttonText='ADD'
+                    handleButtonClick={this.handleButtonClick}
+                    handleInputChange={this.handleInputChange}
                 />
             </div>)
     }
