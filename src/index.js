@@ -30,21 +30,58 @@ const UserCardList = (props) => {
         </div>
     )
 };
-class AddUpdateUserForm extends React.Component {
+const AddUpdateUserForm = (props) => {
+    return (
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        <label>
+                            Name:
+                                <input
+                                type='text'
+                                name='name'
+                                value={props.name}
+                                onChange={props.handleInputChange}
+                            />
+                        </label>
+                    </td>
+                    <td>
+                        <label>
+                            Job:
+                                <input
+                                type='text'
+                                name='job'
+                                value={state.job}
+                                onChange={props.handleInputChange}
+                            />
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colSpan='2'>
+                        <button
+                            className='width-button'
+                            onClick={props.handleButtonClick}
+                        >
+                            {props.buttonText}
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    )
+}
+class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            data: [],
             name: '',
             job: ''
         };
-        this.handleInputChange = this.handleInputChange.bind(this);
         this.handleButtonClick = this.handleButtonClick.bind(this);
-    }
-    handleInputChange(event) {
-        const { name, value } = event.target;
-        this.setState({
-            [name]: value
-        })
+        this.handleInputChange = this.handleInputChange.bind(this);
     }
     async handleButtonClick() {
         const response = await fetch(
@@ -54,60 +91,18 @@ class AddUpdateUserForm extends React.Component {
                     'Content-Type': 'application/json'
                 },
                 method: 'POST',
-                body: JSON.stringify(this.state)
+                body: JSON.stringify({
+                    name: this.state.name,
+                    job: this.state.job
+                })
             });
         const result = await response.json();
     }
-    render() {
-        return (
-            <table>
-                <tbody>
-                    <tr>
-                        <td>
-                            <label>
-                                Name:
-                                <input
-                                    type='text'
-                                    name='name'
-                                    value={this.state.name}
-                                    onChange={this.handleInputChange}
-                                />
-                            </label>
-                        </td>
-                        <td>
-                            <label>
-                                Job:
-                                <input
-                                    type='text'
-                                    name='job'
-                                    value={this.state.job}
-                                    onChange={this.handleInputChange}
-                                />
-                            </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colSpan='2'>
-                            <button
-                                className='width-button'
-                                onClick={this.handleButtonClick}
-                            >
-                                {this.props.buttonText}
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        )
-    }
-
-}
-class App extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            data: []
-        };
+    handleInputChange(event) {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        })
     }
     async componentDidMount() {
         const response = await fetch('https://reqres.in/api/users');
@@ -120,9 +115,14 @@ class App extends React.Component {
         return (
             <div>
                 <UserCardList data={this.state.data} />
-                <AddUpdateUserForm buttonText='ADD' />
+                <AddUpdateUserForm 
+                name = {this.state.name}
+                job = {this.state.job}
+                buttonText='ADD'
+                handleButtonClick = {this.handleButtonClick}
+                handleInputChange = {this.handleInputChange}
+                />
             </div>)
-
     }
 }
 ReactDOM.render(<App />, document.getElementById("root"));
