@@ -164,5 +164,5 @@ class App extends React.Component {
             </Router>
         )
     }
-}
+};
 ReactDOM.render(<App />, document.getElementById("root"));
