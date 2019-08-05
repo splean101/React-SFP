@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom';
-import { userInfo } from 'os';
+//import { userInfo } from 'os';
 
 const UserCard = (props) => {
     return (
@@ -77,10 +77,18 @@ class App extends React.Component {
             name: '',
             job: ''
         };
-        this.handleButtonClick = this.handleButtonClick.bind(this);
+        this.handleButtonClickAdd = this.handleButtonClickAdd.bind(this);
+        this.handleButtonClickUpdate = this.handleButtonClickUpdate.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
     }
-    async handleButtonClick() {
+    async componentDidMount() {
+        const response = await fetch('https://reqres.in/api/users');
+        const result = await response.json();
+        this.setState({
+            data: result.data
+        })
+    }
+    async handleButtonClickAdd() {
         const response = await fetch(
             'https://reqres.in/api/users',
             {
@@ -95,17 +103,25 @@ class App extends React.Component {
             });
         const result = await response.json();
     }
+    async handleButtonClickUpdate() {
+        const response = await fetch(
+            'https://reqres.in/api/users/3',
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                method: 'PUT',
+                body: JSON.stringify({
+                    name: this.state.name,
+                    job: this.state.job
+                })
+            });
+        const result = await response.json();
+    }
     handleInputChange(event) {
         const { name, value } = event.target;
         this.setState({
             [name]: value
-        })
-    }
-    async componentDidMount() {
-        const response = await fetch('https://reqres.in/api/users');
-        const result = await response.json();
-        this.setState({
-            data: result.data
         })
     }
     render() {
@@ -116,7 +132,14 @@ class App extends React.Component {
                     name={this.state.name}
                     job={this.state.job}
                     buttonText='ADD'
-                    handleButtonClick={this.handleButtonClick}
+                    handleButtonClick={this.handleButtonClickAdd}
+                    handleInputChange={this.handleInputChange}
+                />
+                <AddUpdateUserForm
+                    name={this.state.name}
+                    job={this.state.job}
+                    buttonText='UPDATE'
+                    handleButtonClick={this.handleButtonClickUpdate}
                     handleInputChange={this.handleInputChange}
                 />
             </div>)
