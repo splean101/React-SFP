@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom';
+import { BrowserRouter as Router, Route, NavLink, Switch } from 'react-router-dom';
 //import { userInfo } from 'os';
 
 const UserCard = (props) => {
@@ -69,6 +69,15 @@ const AddUpdateUserForm = (props) => {
         </table>
     );
 }
+const Navigation = (props) => {
+    return (
+        <ul>
+            <li><NavLink exact to='/'>Get All</NavLink></li>
+            <li><NavLink to='/create'>Create User</NavLink></li>
+            <li><NavLink to='/update'>Update User</NavLink></li>
+        </ul>
+    );
+}
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -126,23 +135,34 @@ class App extends React.Component {
     }
     render() {
         return (
-            <div>
-                <UserCardList data={this.state.data} />
-                <AddUpdateUserForm
-                    name={this.state.name}
-                    job={this.state.job}
-                    buttonText='ADD'
-                    handleButtonClick={this.handleButtonClickAdd}
-                    handleInputChange={this.handleInputChange}
-                />
-                <AddUpdateUserForm
-                    name={this.state.name}
-                    job={this.state.job}
-                    buttonText='UPDATE'
-                    handleButtonClick={this.handleButtonClickUpdate}
-                    handleInputChange={this.handleInputChange}
-                />
-            </div>)
+            <Router>
+                <div>
+                    <Navigation />
+                    <Switch>
+                        <Route path='/create' render={() => 
+                            <AddUpdateUserForm
+                                name={this.state.name}
+                                job={this.state.job}
+                                buttonText='ADD'
+                                handleButtonClick={this.handleButtonClickAdd}
+                                handleInputChange={this.handleInputChange}
+                            />
+                        }
+                        />
+                        <Route path='/update' render={() => 
+                            <AddUpdateUserForm
+                                name={this.state.name}
+                                job={this.state.job}
+                                buttonText='UPDATE'
+                                handleButtonClick={this.handleButtonClickUpdate}
+                                handleInputChange={this.handleInputChange}
+                            />}
+                        />
+                        <Route render={() => <UserCardList data={this.state.data} />} />
+                    </Switch>
+                </div>
+            </Router>
+        )
     }
 }
 ReactDOM.render(<App />, document.getElementById("root"));
