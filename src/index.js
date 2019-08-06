@@ -111,6 +111,7 @@ class App extends React.Component {
                 })
             });
         const result = await response.json();
+        console.dir(result);
     }
     async handleButtonClickUpdate() {
         const response = await fetch(
@@ -126,6 +127,7 @@ class App extends React.Component {
                 })
             });
         const result = await response.json();
+        console.dir(result);
     }
     handleInputChange(event) {
         const { name, value } = event.target;
