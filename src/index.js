@@ -91,17 +91,20 @@ class App extends React.Component {
         this.storeUpdate = this.storeUpdate.bind(this);
     }
     async componentDidMount() {
+        this.unSubscribe = this.props.store.subscribe(this.storeUpdate);
         const response = await fetch('https://reqres.in/api/users');
         const result = await response.json();
-        this.props.store.subscribe(this.storeUpdate);
         this.props.store.dispatch({
             type: 'NEW_DATA',
             data: result.data
         })
     }
+    componentWillUnmount(){
+        this.unSubscribe();
+    }
     storeUpdate() {
         this.setState({});
-    };
+    }
     async handleButtonClickAdd() {
         const response = await fetch(
             'https://reqres.in/api/users',
