@@ -82,21 +82,26 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [],
             name: '',
             job: ''
         };
         this.handleButtonClickAdd = this.handleButtonClickAdd.bind(this);
         this.handleButtonClickUpdate = this.handleButtonClickUpdate.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.storeUpdate = this.storeUpdate.bind(this);
     }
     async componentDidMount() {
         const response = await fetch('https://reqres.in/api/users');
         const result = await response.json();
-        this.setState({
+        this.props.store.subscribe(this.storeUpdate);
+        this.props.store.dispatch({
+            type: 'NEW_DATA',
             data: result.data
         })
     }
+    storeUpdate() {
+        this.setState({});
+    };
     async handleButtonClickAdd() {
         const response = await fetch(
             'https://reqres.in/api/users',
@@ -160,16 +165,14 @@ class App extends React.Component {
                                 handleInputChange={this.handleInputChange}
                             />}
                         />
-                        <Route render={() => <UserCardList data={this.state.data} />} />
+                        <Route render={() => <UserCardList data={this.props.store.getState()} />} />
                     </Switch>
                 </div>
             </Router>
         )
     }
 };
-ReactDOM.render(<App />, document.getElementById("root"));
 
-//...................................................................
 const initialState = [];
 const reqResDataReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -180,14 +183,6 @@ const reqResDataReducer = (state = initialState, action) => {
     }
 };
 const store = createStore(reqResDataReducer);
-store.subscribe(
-    () => console.log(store.getState())
-);
-(async function () {
-    const response = await fetch('https://reqres.in/api/users');
-    const result = await response.json();
-    store.dispatch({
-        type: 'NEW_DATA',
-        data: result.data
-    })
-})()
+store.subscribe(() => console.log(store.getState()));
+
+ReactDOM.render(<App store={store} />, document.getElementById("root"));
