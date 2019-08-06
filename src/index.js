@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, NavLink, Switch } from 'react-router-dom';
-//import { userInfo } from 'os';
+import { createStore } from 'redux';
 
 const UserCard = (props) => {
     return (
@@ -141,7 +141,7 @@ class App extends React.Component {
                 <div>
                     <Navigation />
                     <Switch>
-                        <Route path='/create' render={() => 
+                        <Route path='/create' render={() =>
                             <AddUpdateUserForm
                                 name={this.state.name}
                                 job={this.state.job}
@@ -151,7 +151,7 @@ class App extends React.Component {
                             />
                         }
                         />
-                        <Route path='/update' render={() => 
+                        <Route path='/update' render={() =>
                             <AddUpdateUserForm
                                 name={this.state.name}
                                 job={this.state.job}
@@ -168,3 +168,26 @@ class App extends React.Component {
     }
 };
 ReactDOM.render(<App />, document.getElementById("root"));
+
+//...................................................................
+const initialState = [];
+const reqResDataReducer = (state = initialState, action) => {
+    switch (action.type) {
+        case 'NEW_DATA':
+            return action.data;
+        default:
+            return state;
+    }
+};
+const store = createStore(reqResDataReducer);
+store.subscribe(
+    () => console.log(store.getState())
+);
+(async function () {
+    const response = await fetch('https://reqres.in/api/users');
+    const result = await response.json();
+    store.dispatch({
+        type: 'NEW_DATA',
+        data: result.data
+    })
+})()
