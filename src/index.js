@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, NavLink, Switch } from 'react-router-dom';
 import { createStore } from 'redux';
 
+//VIEV, REACT
+
 const UserCard = (props) => {
     return (
         <table className="card">
@@ -92,14 +94,10 @@ class App extends React.Component {
     }
     async componentDidMount() {
         this.unSubscribe = this.props.store.subscribe(this.storeUpdate);
-        const response = await fetch('https://reqres.in/api/users');
-        const result = await response.json();
-        this.props.store.dispatch({
-            type: 'NEW_DATA',
-            data: result.data
-        })
+
+        this.props.ac.load()(this.props.store.dispatch);
     }
-    componentWillUnmount(){
+    componentWillUnmount() {
         this.unSubscribe();
     }
     storeUpdate() {
@@ -168,7 +166,7 @@ class App extends React.Component {
                                 handleInputChange={this.handleInputChange}
                             />}
                         />
-                        <Route render={() => <UserCardList data={this.props.store.getState()} />} />
+                        <Route render={() => <UserCardList data={this.props.store.getState().data} />} />
                     </Switch>
                 </div>
             </Router>
@@ -176,16 +174,69 @@ class App extends React.Component {
     }
 };
 
-const initialState = [];
+//STORE, REDUX
+
+const initialState = {
+    requestState: null, // 'START', 'ERROR'
+    data: []
+};
 const reqResDataReducer = (state = initialState, action) => {
+    const newState = {...state};
     switch (action.type) {
-        case 'NEW_DATA':
-            return action.data;
+        case 'NEW_DATA':            
+            newState.requestState = null;
+            newState.data = action.data;
+            return newState;
+
+        case 'DATA_REQUEST':
+            newState.requestState = 'START';
+            return newState;
+
+        case 'DATA_ERROR':
+            newState.requestState = 'ERROR';
+            return newState;
+
         default:
             return state;
     }
 };
 const store = createStore(reqResDataReducer);
+console.log(store.getState());
 store.subscribe(() => console.log(store.getState()));
 
-ReactDOM.render(<App store={store} />, document.getElementById("root"));
+//ACTION CREATOR
+const actionCreator = {
+    _DATA_REQUEST() {
+        return {
+            type: 'DATA_REQUEST'
+        };
+    },
+    _DATA_SUCCESS(data) {
+        return {
+            type: 'NEW_DATA',
+            data: data
+        };
+    },
+    _DATA_ERROR(err) {
+        return {
+            type: 'DATA_ERROR',
+            error: err
+        };
+    },
+    load() {
+        return async (dispatch) => {
+            dispatch(this._DATA_REQUEST());
+            try{
+                const response = await fetch('https://reqres.in/api/users');
+                const result = await response.json();
+                dispatch(this._DATA_SUCCESS(result.data));
+            } catch (err) {
+                dispatch(this._DATA_ERROR(err));
+            }
+            
+        };
+    }
+};
+
+//BUILD
+ReactDOM.render(<App store={store} ac={actionCreator} />, document.getElementById("root"));
