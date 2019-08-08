@@ -1,7 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, NavLink, Switch } from 'react-router-dom';
+//import { BrowserRouter as Router, Route, NavLink, Switch } from 'react-router-dom';
 import { createStore } from 'redux';
+import App from './containers/App';
+import reqResDataReducer from './reducers';
+import * as actionCreator from './actions';
 
 //VIEV, REACT
 
@@ -71,7 +74,7 @@ import { createStore } from 'redux';
         </table>
     );
 }*/
-const Navigation = (props) => {
+/*const Navigation = (props) => {
     return (
         <ul>
             <li><NavLink exact to='/'>Get All</NavLink></li>
@@ -79,8 +82,8 @@ const Navigation = (props) => {
             <li><NavLink to='/update'>Update User</NavLink></li>
         </ul>
     );
-}
-class App extends React.Component {
+}*/
+/*class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -139,7 +142,7 @@ class App extends React.Component {
             </Router>
         )
     }
-};
+};*/
 
 //CONSTANS
 //const NEW_DATA = 'NEW_DATA';
@@ -240,7 +243,7 @@ store.subscribe(() => console.log(store.getState()));
 ReactDOM.render(
     <App
         store={store}
-        load={actionCreator.load.bind(actionCreator)}
+        load={actionCreator.load}
         handleButtonClickAdd={actionCreator.handleButtonClickAdd}
         handleButtonClickUpdate={actionCreator.handleButtonClickUpdate}
     />,
