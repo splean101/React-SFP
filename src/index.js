@@ -5,7 +5,7 @@ import { createStore } from 'redux';
 
 //VIEV, REACT
 
-const UserCard = (props) => {
+/*const UserCard = (props) => {
     return (
         <table className="card">
             <tbody>
@@ -22,8 +22,8 @@ const UserCard = (props) => {
             </tbody>
         </table>
     );
-};
-const UserCardList = (props) => {
+};*/
+/*const UserCardList = (props) => {
     return (
         <div className='blue-border'>
             {props.data.map(
@@ -31,8 +31,8 @@ const UserCardList = (props) => {
             )}
         </div>
     )
-};
-const AddUpdateUserForm = (props) => {
+};*/
+/*const AddUpdateUserForm = (props) => {
     return (
         <table className='blue-border'>
             <tbody>
@@ -70,7 +70,7 @@ const AddUpdateUserForm = (props) => {
             </tbody>
         </table>
     );
-}
+}*/
 const Navigation = (props) => {
     return (
         <ul>
@@ -133,7 +133,7 @@ class App extends React.Component {
                                 handleInputChange={this.handleInputChange}
                             />}
                         />
-                        <Route render={() => <UserCardList data={this.props.store.getState().data} />} />
+                        <Route render={() => <UserCardList data={this.props.store.getState().reqResDataReducer.data} />} />
                     </Switch>
                 </div>
             </Router>
@@ -148,7 +148,7 @@ class App extends React.Component {
 
 //STORE, REDUX
 
-const initialState = {
+/*const initialState = {
     requestState: null, // 'START', 'ERROR'
     data: []
 };
@@ -171,13 +171,13 @@ const reqResDataReducer = (state = initialState, action) => {
         default:
             return state;
     }
-};
+};*/
 const store = createStore(reqResDataReducer);
 console.log(store.getState());
 store.subscribe(() => console.log(store.getState()));
 
 //ACTION CREATOR
-const actionCreator = {
+/*const actionCreator = {
     _DATA_REQUEST() {
         return {
             type: DATA_REQUEST
@@ -234,7 +234,7 @@ const actionCreator = {
         const result = await response.json();
         console.dir(result);
     }
-};
+};*/
 
 //BUILD
 ReactDOM.render(
