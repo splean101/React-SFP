@@ -142,9 +142,9 @@ class App extends React.Component {
 };
 
 //CONSTANS
-const NEW_DATA = 'NEW_DATA';
-const DATA_REQUEST = 'DATA_REQUEST';
-const DATA_ERROR = 'DATA_ERROR';
+//const NEW_DATA = 'NEW_DATA';
+//const DATA_REQUEST = 'DATA_REQUEST';
+//const DATA_ERROR = 'DATA_ERROR';
 
 //STORE, REDUX
 
