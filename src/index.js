@@ -87,15 +87,13 @@ class App extends React.Component {
             name: '',
             job: ''
         };
-        this.handleButtonClickAdd = this.handleButtonClickAdd.bind(this);
-        this.handleButtonClickUpdate = this.handleButtonClickUpdate.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.storeUpdate = this.storeUpdate.bind(this);
     }
     async componentDidMount() {
         this.unSubscribe = this.props.store.subscribe(this.storeUpdate);
 
-        this.props.ac.load()(this.props.store.dispatch);
+        this.props.load()(this.props.store.dispatch);
     }
     componentWillUnmount() {
         this.unSubscribe();
@@ -103,38 +101,7 @@ class App extends React.Component {
     storeUpdate() {
         this.setState({});
     }
-    async handleButtonClickAdd() {
-        const response = await fetch(
-            'https://reqres.in/api/users',
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                method: 'POST',
-                body: JSON.stringify({
-                    name: this.state.name,
-                    job: this.state.job
-                })
-            });
-        const result = await response.json();
-        console.dir(result);
-    }
-    async handleButtonClickUpdate() {
-        const response = await fetch(
-            'https://reqres.in/api/users/3',
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                method: 'PUT',
-                body: JSON.stringify({
-                    name: this.state.name,
-                    job: this.state.job
-                })
-            });
-        const result = await response.json();
-        console.dir(result);
-    }
+
     handleInputChange(event) {
         const { name, value } = event.target;
         this.setState({
@@ -152,7 +119,7 @@ class App extends React.Component {
                                 name={this.state.name}
                                 job={this.state.job}
                                 buttonText='ADD'
-                                handleButtonClick={this.handleButtonClickAdd}
+                                handleButtonClick={this.props.handleButtonClickAdd}
                                 handleInputChange={this.handleInputChange}
                             />
                         }
@@ -162,7 +129,7 @@ class App extends React.Component {
                                 name={this.state.name}
                                 job={this.state.job}
                                 buttonText='UPDATE'
-                                handleButtonClick={this.handleButtonClickUpdate}
+                                handleButtonClick={this.props.handleButtonClickUpdate}
                                 handleInputChange={this.handleInputChange}
                             />}
                         />
@@ -174,6 +141,11 @@ class App extends React.Component {
     }
 };
 
+//CONSTANS
+const NEW_DATA = 'NEW_DATA';
+const DATA_REQUEST = 'DATA_REQUEST';
+const DATA_ERROR = 'DATA_ERROR';
+
 //STORE, REDUX
 
 const initialState = {
@@ -181,18 +153,18 @@ const initialState = {
     data: []
 };
 const reqResDataReducer = (state = initialState, action) => {
-    const newState = {...state};
+    const newState = { ...state };
     switch (action.type) {
-        case 'NEW_DATA':            
+        case NEW_DATA:
             newState.requestState = null;
             newState.data = action.data;
             return newState;
 
-        case 'DATA_REQUEST':
+        case DATA_REQUEST:
             newState.requestState = 'START';
             return newState;
 
-        case 'DATA_ERROR':
+        case DATA_ERROR:
             newState.requestState = 'ERROR';
             return newState;
 
@@ -208,35 +180,69 @@ store.subscribe(() => console.log(store.getState()));
 const actionCreator = {
     _DATA_REQUEST() {
         return {
-            type: 'DATA_REQUEST'
+            type: DATA_REQUEST
         };
     },
     _DATA_SUCCESS(data) {
         return {
-            type: 'NEW_DATA',
+            type: NEW_DATA,
             data: data
         };
     },
     _DATA_ERROR(err) {
         return {
-            type: 'DATA_ERROR',
+            type: DATA_ERROR,
             error: err
         };
     },
     load() {
         return async (dispatch) => {
             dispatch(this._DATA_REQUEST());
-            try{
+            try {
                 const response = await fetch('https://reqres.in/api/users');
                 const result = await response.json();
                 dispatch(this._DATA_SUCCESS(result.data));
             } catch (err) {
                 dispatch(this._DATA_ERROR(err));
             }
-            
+
         };
+    },
+    async handleButtonClickAdd(name, job) {
+        const response = await fetch(
+            'https://reqres.in/api/users',
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                method: 'POST',
+                body: JSON.stringify({ name, job })
+            });
+        const result = await response.json();
+        console.dir(result);
+    },
+    async handleButtonClickUpdate(name, job) {
+        const response = await fetch(
+            'https://reqres.in/api/users/3',
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                method: 'PUT',
+                body: JSON.stringify({ name, job })
+            });
+        const result = await response.json();
+        console.dir(result);
     }
 };
 
 //BUILD
-ReactDOM.render(<App store={store} ac={actionCreator} />, document.getElementById("root"));
+ReactDOM.render(
+    <App
+        store={store}
+        load={actionCreator.load.bind(actionCreator)}
+        handleButtonClickAdd={actionCreator.handleButtonClickAdd}
+        handleButtonClickUpdate={actionCreator.handleButtonClickUpdate}
+    />,
+    document.getElementById("root")
+);
