@@ -13,8 +13,10 @@ export default class App extends React.Component {
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.storeUpdate = this.storeUpdate.bind(this);
+        this.handleButtonClickAdd = this.handleButtonClickAdd.bind(this);
+        this.handleButtonClickUpdate = this.handleButtonClickUpdate.bind(this);
     }
-    async componentDidMount() {
+    componentDidMount() {
         this.unSubscribe = this.props.store.subscribe(this.storeUpdate);
 
         this.props.load()(this.props.store.dispatch);
@@ -32,6 +34,13 @@ export default class App extends React.Component {
             [name]: value
         })
     }
+
+    handleButtonClickAdd(){
+        this.props.handleButtonClickAdd(this.state.name, this.state.job);
+    }
+    handleButtonClickUpdate(){
+        this.props.handleButtonClickUpdate(this.state.name, this.state.job);
+    }
     render() {
         return (
             <Router>
@@ -43,7 +52,7 @@ export default class App extends React.Component {
                                 name={this.state.name}
                                 job={this.state.job}
                                 buttonText='ADD'
-                                handleButtonClick={this.props.handleButtonClickAdd}
+                                handleButtonClick={this.handleButtonClickAdd}
                                 handleInputChange={this.handleInputChange}
                             />
                         }
@@ -53,7 +62,7 @@ export default class App extends React.Component {
                                 name={this.state.name}
                                 job={this.state.job}
                                 buttonText='UPDATE'
-                                handleButtonClick={this.props.handleButtonClickUpdate}
+                                handleButtonClick={this.handleButtonClickUpdate}
                                 handleInputChange={this.handleInputChange}
                             />}
                         />
