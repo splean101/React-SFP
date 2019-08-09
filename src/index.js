@@ -6,8 +6,8 @@ import reqResDataReducer from './reducers';
 import * as actionCreator from './actions';
 
 const store = createStore(reqResDataReducer);
-console.log(store.getState());
-store.subscribe(() => console.log(store.getState()));
+//console.log(store.getState());
+//store.subscribe(() => console.log(store.getState()));
 
 //BUILD
 ReactDOM.render(
