@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { createStore } from 'redux';
 import App from './containers/App';
 import reqResDataReducer from './reducers';
-import * as actionCreator from './actions';
+import {Provider} from 'react-redux';
 
 const store = createStore(reqResDataReducer);
 //console.log(store.getState());
@@ -11,11 +11,8 @@ const store = createStore(reqResDataReducer);
 
 //BUILD
 ReactDOM.render(
-    <App
-        store={store}
-        load={actionCreator.load}
-        handleButtonClickAdd={actionCreator.handleButtonClickAdd}
-        handleButtonClickUpdate={actionCreator.handleButtonClickUpdate}
-    />,
+    <Provider store={store}>
+        <App />
+    </Provider>,    
     document.getElementById("root")
 );
